@@ -62,7 +62,12 @@ class RestApiClient implements IRestApiClient {
     } else {
       _dio.httpClientAdapter = getAdapter();
     }
-    intercepterList?.map((e) => _dio.interceptors.add(e));
+    //intercepterList?.map((e) => {print("Loop"), _dio.interceptors.add(e)});
+    if (null != intercepterList) {
+      for (Interceptor e in intercepterList) {
+        _dio.interceptors.add(e);
+      }
+    }
 
     authHandler = AuthHandler(
         dio: _dio,
