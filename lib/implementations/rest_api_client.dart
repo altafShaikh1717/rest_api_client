@@ -39,15 +39,17 @@ class RestApiClient implements IRestApiClient {
   @override
   late ExceptionHandler exceptionHandler;
 
+  List<Interceptor> intercepterList = [];
+
   static Future<void> initFlutter() async =>
       await StorageRepository.initFlutter();
 
-  RestApiClient({
-    required RestApiClientOptions options,
-    ExceptionOptions? exceptionOptions,
-    LoggingOptions? loggingOptions,
-    AuthOptions? authOptions,
-  }) {
+  RestApiClient(
+      {required RestApiClientOptions options,
+      ExceptionOptions? exceptionOptions,
+      LoggingOptions? loggingOptions,
+      AuthOptions? authOptions,
+      List<Interceptor>? intercepterList}) {
     _options = options;
     _exceptionOptions = exceptionOptions ?? ExceptionOptions();
     _loggingOptions = loggingOptions ?? LoggingOptions();
@@ -60,6 +62,7 @@ class RestApiClient implements IRestApiClient {
     } else {
       _dio.httpClientAdapter = getAdapter();
     }
+    intercepterList?.map((e) => _dio.interceptors.add(e));
 
     authHandler = AuthHandler(
         dio: _dio,
